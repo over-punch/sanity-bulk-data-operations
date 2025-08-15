@@ -291,7 +291,7 @@ const BulkDataOperations: React.FC<BulkDataOperationsProps> = ({
           <Stack space={3}>
             <Text weight="semibold">Creation Configuration</Text>
             <TextArea
-              placeholder='Enter JSON template or array of objects...\n{"title": "Example", "content": "..."}')
+              placeholder='Enter JSON template or array of objects...\n{"title": "Example", "content": "..."}'
               value={templateData}
               onChange={(event) => setTemplateData(event.currentTarget.value)}
               rows={6}
