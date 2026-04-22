@@ -32,12 +32,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/quitequinn/sanity-bulk-data-operations.git"
+    "url": "https://github.com/Liiift-Studio/sanity-bulk-data-operations.git"
   },
   "bugs": {
-    "url": "https://github.com/quitequinn/sanity-bulk-data-operations/issues"
+    "url": "https://github.com/Liiift-Studio/sanity-bulk-data-operations/issues"
   },
-  "homepage": "https://github.com/quitequinn/sanity-bulk-data-operations#readme",
+  "homepage": "https://github.com/Liiift-Studio/sanity-bulk-data-operations#readme",
   "peerDependencies": {
     "@sanity/ui": "^1.0.0",
     "react": "^18.0.0",
