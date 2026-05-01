@@ -12,7 +12,7 @@
 		"src"
 	],
 	"scripts": {
-		"build": "esbuild src/index.jsx --bundle=true --format=esm --jsx=automatic --external:react --external:react-dom --external:sanity --external:@sanity/* --outfile=dist/index.js",
+		"build": "esbuild src/index.ts --bundle=true --format=esm --jsx=automatic --external:react --external:react-dom --external:sanity --external:@sanity/* --outfile=dist/index.js",
 		"prepublishOnly": "npm run build"
 	},
 	"keywords": [
