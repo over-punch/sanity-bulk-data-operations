@@ -1,0 +1,24 @@
+%% Data-flow / operation model for @liiift-studio/sanity-bulk-data-operations
+%% Rendered to assets/data-flow.svg by `npm run capture` (scripts/capture.mjs).
+flowchart TD
+    A["Search criteria<br/>type · title match · exclude"] --> B{{"GROQ query<br/>built in component"}}
+    B --> C[("Sanity dataset")]
+    C --> D["Matched documents"]
+
+    D --> E{Danger Mode?}
+    E -->|"Off — safe default"| F["setIfMissing(patch)<br/>only fills empty fields"]
+    E -->|"On — gated by<br/>warning modal"| G["set(patch)<br/>overwrites existing values"]
+
+    H["Transform mode<br/>full · find/replace · prepend<br/>append · trim/case/type-convert"] --> F
+    H --> G
+
+    F --> I["client.patch(_id)…commit()<br/>one doc at a time, 50ms apart"]
+    G --> I
+    I --> C
+
+    classDef danger fill:#3a1212,stroke:#e03e3e,color:#ffd9d9;
+    classDef safe fill:#0f2a16,stroke:#3fa55f,color:#d6f5df;
+    classDef store fill:#1a1a2e,stroke:#6b6bd6,color:#dcdcff;
+    class G,I danger;
+    class F safe;
+    class C store;
