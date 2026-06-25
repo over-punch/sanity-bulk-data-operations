@@ -1,6 +1,6 @@
 {
 	"name": "@liiift-studio/sanity-bulk-data-operations",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Flexible bulk data operations utility for Sanity Studio — search, add, and modify data across any document types with safety features",
 	"main": "dist/index.js",
 	"module": "dist/index.js",
