@@ -1,6 +1,6 @@
 // Component for adding or replacing field data across multiple documents
-import { Stack, Card, Grid, Heading, Text, Button, TextInput, Select, TextArea, Radio } from '@sanity/ui'
-import { EditIcon, CollapseIcon, ExpandIcon, LockIcon, UnlockIcon } from '@sanity/icons'
+import { Stack, Card, Grid, Heading, Text, Button, TextInput, Select, TextArea, Radio } from '@liiift-studio/sanity-ui-compat'
+import { EditIcon, CollapseIcon, ExpandIcon, LockIcon, UnlockIcon } from '@liiift-studio/sanity-ui-compat/icons'
 import { useState, useEffect } from 'react'
 import DangerModeWarning, { shouldShowDangerWarning } from './DangerModeWarning'
 
