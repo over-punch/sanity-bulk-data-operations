@@ -3,14 +3,34 @@
 A bulk field-editing component for **Sanity Studio** that searches documents by type and name, then **adds or rewrites a field across all matches** in one pass — with a two-tier safety model that keeps non-destructive fills separate from overwrites.
 
 [![npm](https://img.shields.io/npm/v/@liiift-studio/sanity-bulk-data-operations.svg)](https://www.npmjs.com/package/@liiift-studio/sanity-bulk-data-operations)
-![Sanity](https://img.shields.io/badge/Sanity-v3%20%7C%20v4%20%7C%20v5-f03e2f.svg)
-![React](https://img.shields.io/badge/React-18%20%7C%2019-61dafb.svg)
+![Sanity](https://img.shields.io/badge/Sanity-Studio_v3_to_v6-f03e2f.svg)
+![React](https://img.shields.io/badge/React-18_and_19-61dafb.svg)
 ![license](https://img.shields.io/badge/license-MIT-blue.svg)
 
 > **Heads up — this tool writes to your dataset.** In its default mode it only
 > *fills empty fields* (`setIfMissing`), but **Danger Mode overwrites existing
 > values** (`set`) and cannot be undone. Read [Safety model](#safety-model) before
 > using it on production data.
+
+---
+
+## Blast radius
+
+Read this before pointing it at a dataset you care about.
+
+| Question | Answer |
+|---|---|
+| **What does it mutate?** | Exactly **one field** — the name you type into "Field Name" — on **every document returned by the search**. No other field is touched. |
+| **How many documents?** | All matches, not a selection. The list shown above the button *is* the write set, and the count is displayed beside it. |
+| **Drafts or published?** | **Both.** The search query is `*[_type == … && title match …]` with **no `!(_id in path('drafts.**'))` filter**, so unpublished drafts of matching documents are returned and patched alongside their published versions. |
+| **Is it reversible?** | **No undo in the tool.** In the default mode the risk is low (it only fills fields that were empty, so reverting means unsetting them). In **Danger Mode the previous value is gone** — recovery depends on a dataset export you took beforehand, or on your project's document-history retention, which is plan-dependent and not guaranteed. |
+| **What gates the destructive path?** | Danger Mode, which raises a confirmation modal — **suppressible for 48 hours**, so it will not necessarily re-prompt on the run you were not expecting. |
+| **Does it delete anything?** | **No.** This tool only patches fields. It never deletes documents. |
+| **Scope of a mistake** | Bounded by your search terms. A too-broad "Name" prefix with an empty exclude term matches a lot of documents. |
+
+Patches commit **sequentially**, one document at a time, 50 ms apart, each one
+`await`ed — so a failure is caught and surfaced rather than silently swallowed,
+and interrupting a run leaves the already-patched documents patched.
 
 ---
 
@@ -196,16 +216,64 @@ This component does bulk writes, so its safety design is deliberate:
 > Only paste expressions you trust. Treat this as an admin-only tool, not
 > something to expose to untrusted Studio users.
 
+> ⚠️ **Inputs are interpolated straight into GROQ.** The search term, the exclude
+> term, the document type and the **field name** are all string-interpolated into
+> the query (e.g. `title match "${value}*"`, `!defined(${field})`) rather than
+> passed as parameters. A stray quote will break the query; a crafted one could
+> widen it. This is another reason to treat the panel as admin-only.
+
+### Known scope limits
+
+- **The document-type list is a fixed dropdown**, not a schema-driven picker:
+  `typeface`, `collection`, `pair`, `font`, `license`, `order`, `account`, `cart`,
+  `page`, `blogpost`, `release-notes`. Other types require editing the source.
+- **Search matches on `title` only**, as a prefix (`title match "value*"`).
+  Documents whose type has no `title` field will not be findable.
+- **Non-string fields are skipped by most transforms.** Find & Replace, Prepend
+  and Append only apply when the field's current value is a string; a document
+  whose field holds a non-string is left unchanged by those modes.
+
 ---
 
-## Requirements
+## Compatibility
 
-Peer dependencies (declared in `package.json`):
+This package supports **Sanity Studio v3, v4, v5 and v6** from a single build.
 
-- `sanity` — `^3 || ^4 || ^5`
-- `@sanity/ui` — `^1 || ^2 || ^3`
-- `@sanity/icons` — `^2 || ^3`
-- `react` — `^18 || ^19`
+| Peer | Declared range | What that means |
+|------|----------------|-----------------|
+| `sanity` | `>=3 <7` | Studio **v3 through v6** |
+| `@sanity/ui` | `>=2 <5` | v2, v3, v4 — see the note below, `<5` is **correct** for Studio v6 |
+| `@sanity/icons` | `>=2 <6` | v2 through v5 |
+| `react` | `^18.0.0 \|\| ^19.0.0` | React 18 or 19 |
+
+> The `@sanity/ui` ceiling of `<5` looks like a mistake at a glance and is not.
+> **Studio v6 ships `@sanity/ui` v4, not v5** — so `>=2 <5` covers every Studio
+> major listed above.
+
+### How one build spans four Studio majors
+
+The two libraries made breaking changes that are invisible to the type-checker:
+
+- **`@sanity/ui` v4** moved `Tooltip`, `Menu`, `MenuButton`, `MenuItem`, `Code`,
+  `Popover`, `Autocomplete`, `Toast` and `useToast` out of the package root and
+  into subpath entries.
+- **`@sanity/icons` v5** removed every named `*Icon` export.
+
+The trap is that **both packages still *declare* the removed names in their
+`.d.ts`, typed as `never`.** A named import therefore type-checks cleanly,
+compiles, ships — and then throws at runtime in the Studio.
+
+So this package **imports no `@sanity/ui` or `@sanity/icons` symbol directly.**
+Every primitive and icon is routed through
+[`@liiift-studio/sanity-ui-compat`](https://www.npmjs.com/package/@liiift-studio/sanity-ui-compat),
+which resolves the *installed* namespace at runtime and falls back to a plain DOM
+element if a given primitive is absent. That indirection, not a version matrix in
+CI, is what makes one artifact work across v3–v6.
+
+> **How far this is actually verified.** v6 support rests on the declared peer
+> ranges, a green build, and use in three in-house Studios. It has **not** been
+> exercised broadly in a running Sanity 6 Studio — treat v6 as supported and
+> lightly travelled, and please file an issue if you hit a gap.
 
 Built as an ESM bundle (`dist/index.js`) with React, `sanity`, and `@sanity/*`
 left external.
