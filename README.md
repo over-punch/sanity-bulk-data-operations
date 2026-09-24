@@ -45,7 +45,7 @@ filter and lets you overwrite or transform existing values.
 
 <p align="center">
   <img
-    src="https://raw.githubusercontent.com/Liiift-Studio/sanity-bulk-data-operations/main/assets/data-flow.svg?v=1"
+    src="https://raw.githubusercontent.com/over-punch/sanity-bulk-data-operations/main/assets/data-flow.svg?v=1"
     alt="Data flow: search criteria build a GROQ query against the Sanity dataset; matched documents are routed through a Danger Mode check — off uses the non-destructive setIfMissing patch, on uses the destructive set patch — and committed one document at a time, 50ms apart."
     width="640"
   />
@@ -287,4 +287,4 @@ MIT — © Liiift Studio.
 ## Contributing
 
 Issues and pull requests welcome:
-<https://github.com/Liiift-Studio/sanity-bulk-data-operations/issues>
+<https://github.com/over-punch/sanity-bulk-data-operations/issues>
