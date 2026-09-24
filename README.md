@@ -2,7 +2,7 @@
 
 A bulk field-editing component for **Sanity Studio** that searches documents by type and name, then **adds or rewrites a field across all matches** in one pass — with a two-tier safety model that keeps non-destructive fills separate from overwrites.
 
-[![npm](https://img.shields.io/npm/v/@liiift-studio/sanity-bulk-data-operations.svg)](https://www.npmjs.com/package/@liiift-studio/sanity-bulk-data-operations)
+[![npm](https://img.shields.io/npm/v/@overpunch/sanity-bulk-data-operations.svg)](https://www.npmjs.com/package/@overpunch/sanity-bulk-data-operations)
 ![Sanity](https://img.shields.io/badge/Sanity-Studio_v3_to_v6-f03e2f.svg)
 ![React](https://img.shields.io/badge/React-18_and_19-61dafb.svg)
 ![license](https://img.shields.io/badge/license-MIT-blue.svg)
@@ -73,10 +73,10 @@ Regenerate the diagram with `npm run capture` (source: `scripts/data-flow.mmd`).
 ## Installation
 
 ```bash
-npm install @liiift-studio/sanity-bulk-data-operations
+npm install @overpunch/sanity-bulk-data-operations
 ```
 
-> The package is **scoped** — use the full `@liiift-studio/…` name. There is no
+> The package is **scoped** — use the full `@overpunch/…` name. There is no
 > unscoped `sanity-bulk-data-operations` package.
 
 ---
@@ -91,7 +91,7 @@ client and a small amount of state to track Danger Mode.
 import {useState} from 'react'
 import {useClient} from 'sanity'
 import {EditIcon} from '@sanity/icons'
-import SearchAddData from '@liiift-studio/sanity-bulk-data-operations'
+import SearchAddData from '@overpunch/sanity-bulk-data-operations'
 
 export default function BulkEditor() {
 	const client = useClient({apiVersion: '2024-01-01'})
@@ -166,7 +166,7 @@ warning modal should be shown. Users can suppress the modal for 48 hours; this
 helper checks the stored expiry and returns `false` while suppression is active.
 
 ```ts
-import {shouldShowDangerWarning} from '@liiift-studio/sanity-bulk-data-operations'
+import {shouldShowDangerWarning} from '@overpunch/sanity-bulk-data-operations'
 
 if (shouldShowDangerWarning()) {
 	// Show your own confirmation, or let the component's built-in modal handle it.
@@ -265,7 +265,7 @@ compiles, ships — and then throws at runtime in the Studio.
 
 So this package **imports no `@sanity/ui` or `@sanity/icons` symbol directly.**
 Every primitive and icon is routed through
-[`@liiift-studio/sanity-ui-compat`](https://www.npmjs.com/package/@liiift-studio/sanity-ui-compat),
+[`@overpunch/sanity-ui-compat`](https://www.npmjs.com/package/@overpunch/sanity-ui-compat),
 which resolves the *installed* namespace at runtime and falls back to a plain DOM
 element if a given primitive is absent. That indirection, not a version matrix in
 CI, is what makes one artifact work across v3–v6.
